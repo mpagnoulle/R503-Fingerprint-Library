@@ -1,0 +1,15 @@
+{
+    "name": "R503-Fingerprint-Sensor-Library",
+    "version": "1.0",
+    "license": "Apache 2.0",
+    "keywords": "fingerprint, r503",
+    "description": "A library to interface (UART) with the capacitive R503 fingerprint sensor made by Hangzhou Grow Technology.",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/mpagnoulle/R503-Fingerprint-Sensor-Library.git"
+    },
+    "exclude": "docs",
+    "frameworks": "arduino",
+    "platforms": ["espressif32"]
+}
