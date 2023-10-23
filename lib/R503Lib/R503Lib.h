@@ -5,13 +5,10 @@
 #include <HardwareSerial.h>
 #include "R503Packet.h"
 
-#define R503_DEBUG false
-
 // Defaults
 #define R503_PASSWORD 0x0
-#define R503_RECEIVE_TIMEOUT 1000
-#define R503_CLEAR_SERIAL_DELAY 200
-#define R503_RESET_TIMEOUT 1000
+#define R503_RECEIVE_TIMEOUT 3000
+#define R503_RESET_TIMEOUT 3000
 
 // Confirmation Codes
 #define R503_OK 0x00
