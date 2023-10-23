@@ -16,7 +16,9 @@ An ESP32 compatible library (Arduino SDK) for the **R503** capacitive fingerprin
 |Yellow  (TXD)|RXD|
 |Blue (Wake UP)|GPIO pin of your choice|
 
-ℹ <kbd>This library is ESP32's hardware UARTs, you can choose which pins to be assigned to the UART, consider reserved pins while doing so.</kbd>
+ℹ *Information:*
+
+<kbd>This library is ESP32's hardware UARTs, you can choose which pins to be assigned to the UART, consider reserved pins while doing so.</kbd>
 󠀠󠀠󠀠󠀠󠀠<kbd>If you do not intend to use touch induction to provide a wake-up signal to the ESP32 when the sensor is touched, the white wire can be left unconnected.</kbd>
 
 ## Sensor Documentation
