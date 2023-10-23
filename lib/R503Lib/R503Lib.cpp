@@ -1,5 +1,20 @@
+/**
+ * @file R503Lib.cpp
+ * @brief Library for interfacing with the R503 fingerprint sensor module.
+ * 
+ * This library provides an interface for communicating with the R503 fingerprint sensor module using an ESP32.
+ * It includes functions for device-related operations such as reading parameters and device information, as well as fingerprint-related operations such as taking and storing fingerprints.
+ * 
+ * @author Maxime Pagnoulle (MXPG)
+ */
+
 #include "R503Lib.h"
 
+/**
+ * @brief Macros to send commands to the R503 fingerprint sensor module.
+ * 
+ * These macros are used to send commands and receive confirmation codes from the R503 fingerprint sensor module.
+ */
 #define GET_PACKET(CMD_SIZE, ...)                                       \
     uint8_t command[] = {__VA_ARGS__};                                  \
     sendPacket(R503Packet(R503_PKT_COMMAND, sizeof(command), command)); \
@@ -292,6 +307,44 @@ uint8_t R503Lib::setPacketSize(uint16_t size) {
 }
 
 /**
+ * @brief Gets the number of valid templates stored in the sensor.
+ * 
+ * @param count The number of valid templates stored in the sensor.
+ * @return uint8_t Returns R503_OK if the reset was successful, or an error code otherwise.
+ */
+uint8_t R503Lib::getValidTemplateCount(uint16_t &count)
+{
+    GET_PACKET(3, 0x1D);
+    count = data[1] << 8 | data[2];
+
+    return confirmationCode;
+}
+
+/**
+ * @brief Cancels the current instruction being executed by the R503 fingerprint sensor.
+ * 
+ * @return uint8_t Returns R503_OK if the reset was successful, or an error code otherwise.
+ */
+uint8_t R503Lib::cancelInstruction()
+{
+    SEND_CMD(0x30);
+}
+
+/**
+ * @brief Gets a random number from the fingerprint module.
+ * 
+ * @param number The random number obtained from the module.
+ * @return uint8_t Returns R503_OK if the reset was successful, or an error code otherwise.
+ */
+uint8_t R503Lib::getRandomNumber(uint32_t &number)
+{
+    GET_PACKET(5, 0x14);
+    number = data[1] << 24 | data[2] << 16 | data[3] << 8 | data[4];
+
+    return confirmationCode;
+}
+
+/**
  * @brief Sends a reset command to the R503 fingerprint sensor module.
  *
  * @return uint8_t Returns R503_OK if the reset was successful, or an error code otherwise.
@@ -421,6 +474,18 @@ uint8_t R503Lib::getTemplate(uint8_t charBuffer, uint16_t location)
 }
 
 /**
+ * @brief Deletes a template from the specified location.
+ *
+ * @param location The location of the template to be deleted.
+ *
+ * @return uint8_t Returns R503_OK if successful, otherwise returns an error code.
+ */
+uint8_t R503Lib::deleteTemplate(uint16_t location, uint16_t count)
+{
+    SEND_CMD(0x0C, static_cast<uint8_t>(location >> 8), static_cast<uint8_t>(location), static_cast<uint8_t>(count >> 8), static_cast<uint8_t>(count));
+}
+
+/**
  * @brief Downloads the template data from the specified character buffer from R503
  *
  * @param charBuffer The character buffer to download the template from.
@@ -464,18 +529,6 @@ uint8_t R503Lib::uploadTemplate(uint8_t charBuffer, uint8_t *templateData, uint1
         return confirmationCode;
 
     return sendData(tempBuffer, tempBufferSize); // Send the buffer to the sensor
-}
-
-/**
- * @brief Deletes a template from the specified location.
- *
- * @param location The location of the template to be deleted.
- *
- * @return uint8_t Returns R503_OK if successful, otherwise returns an error code.
- */
-uint8_t R503Lib::deleteTemplate(uint16_t location, uint16_t count)
-{
-    SEND_CMD(0x0C, static_cast<uint8_t>(location >> 8), static_cast<uint8_t>(location), static_cast<uint8_t>(count >> 8), static_cast<uint8_t>(count));
 }
 
 /**
@@ -546,14 +599,6 @@ uint8_t R503Lib::readIndexTable(uint8_t *table, uint8_t page) {
 
     return confirmationCode;
 }
-
-/*uint8_t R503Lib::autoEnroll(uint16_t location)
-{   
-    uint8_t config[4] = {0x01, 0x01, 0x00, 0x01};
-    GET_PACKET(5, 0x31, location, config[0], config[1], config[2], config[3]);
-
-    return confirmationCode;
-}*/
 
 /* --------------------------
     ? Communication Related
@@ -816,6 +861,10 @@ uint8_t R503Lib::receiveAck(uint8_t *data, uint16_t &length)
 
     return data[0];
 }
+
+/* --------------------------
+    ? Get Device Info
+----------------------------*/
 
 uint8_t R503Lib::printDeviceInfo() {
     R503DeviceInfo info;

@@ -1,3 +1,13 @@
+/**
+ * @file R503Lib.h
+ * @brief Library for interfacing with the R503 fingerprint sensor module.
+ * 
+ * This library provides an interface for communicating with the R503 fingerprint sensor module using an ESP32.
+ * It includes functions for device-related operations such as reading parameters and device information, as well as fingerprint-related operations such as taking and storing fingerprints.
+ * 
+ * @author Maxime Pagnoulle (MXPG)
+ */
+
 #ifndef R503LIB_H
 #define R503LIB_H
 
@@ -96,24 +106,27 @@ public:
     uint8_t setAuraLED(uint8_t control, uint8_t color, uint8_t speed, uint8_t repeat);
     uint8_t handShake();
     uint8_t checkSensor();
-    uint8_t softReset();
     uint8_t setSecurityLevel(uint8_t level);
     uint8_t setBaudrate(long baudrate);
     uint8_t setPacketSize(uint16_t size);
     uint8_t writeParameter(uint8_t paramNumber, uint8_t value);
+    uint8_t getValidTemplateCount(uint16_t &count);
+    uint8_t cancelInstruction();
+    uint8_t getRandomNumber(uint32_t &number);
+    uint8_t softReset();
 
     // Fingerprint Related
     uint8_t takeImage();
-    uint8_t uploadImage(uint8_t *image, uint16_t &size);
     uint8_t downloadImage(uint8_t *image, uint16_t size);
+    uint8_t uploadImage(uint8_t *image, uint16_t &size);
     uint8_t extractFeatures(uint8_t charBuffer);
     uint8_t createTemplate();
     uint8_t storeTemplate(uint8_t charBuffer, uint16_t location);
     uint8_t getTemplate(uint8_t charBuffer, uint16_t location);
     uint8_t deleteTemplate(uint16_t location, uint16_t count = 1);
-    uint8_t getTemplateCount(uint16_t &count);
     uint8_t downloadTemplate(uint8_t charBuffer, uint8_t *templateData, uint16_t &size);
     uint8_t uploadTemplate(uint8_t charBuffer, uint8_t *templateData, uint16_t size);
+    uint8_t getTemplateCount(uint16_t &count);
     uint8_t emptyLibrary();
     uint8_t matchFinger(uint16_t &confidence);
     uint8_t searchFinger(uint8_t charBuffer, uint16_t &location, uint16_t &confidence);
@@ -139,9 +152,9 @@ private:
     // Packet handling
     void sendPacket(R503Packet const &packet);
     uint8_t receivePacket(R503Packet &packet);
-    uint8_t receiveAck(uint8_t *data, uint16_t &length);
     uint8_t sendData(const uint8_t *data, uint16_t length);
     uint8_t receiveData(uint8_t *data, uint16_t &length);
+    uint8_t receiveAck(uint8_t *data, uint16_t &length);
 };
 
 #endif
