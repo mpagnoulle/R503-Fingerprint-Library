@@ -1,2 +1,2 @@
-# R503-Fingerprint-Library
+# R503-Fingerprint-Library - This is a work in progress...
 An ESP32 Library to interact with the R503 fingerprint sensor.
