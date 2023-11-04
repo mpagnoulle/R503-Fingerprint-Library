@@ -1,4 +1,4 @@
-# R503-Fingerprint-Library
+# R503-Fingerprint-Sensor-Library
 An ESP32 compatible library (Arduino SDK) for the **R503** capacitive fingerprint sensor from Hangzhou Grow Technology.
 
 ⚠ <kbd><strong>NOTE:</strong> This is a work in progress, some things may not work as expected.</kbd>
